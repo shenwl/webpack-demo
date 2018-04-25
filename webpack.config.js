@@ -4,8 +4,15 @@ const CleanWebpackPlugin = require('clean-webpack-plugin')
 const webpack = require('webpack')
 
 module.exports = {
+    // 指定编译上下文
+    context: path.resolve(process.cwd(), "src"),
     entry: {
-        app: './src/index.js'
+        app: './app.js'
+    },
+    output: {
+        publicPath: "/dist",
+        path: path.resolve(process.cwd(), 'dist'),
+        filename: '[name].js'
     },
     devtool: 'inline-source-map',
     devServer: {
@@ -14,16 +21,14 @@ module.exports = {
     },
     plugins: [
         new HtmlWebpackPlugin({
-            title: 'output manager'
+            title: 'index',
+            template: './webpack-template.html',
+            inject: true
         }),
         new CleanWebpackPlugin(['dist']),
         new webpack.NamedModulesPlugin(),
         new webpack.HotModuleReplacementPlugin()
     ],
-    output: {
-        filename: '[name].bundle.js',
-        path: path.resolve(__dirname, 'dist')
-    },
     module: {
         rules: [{
                 test: /\.scss$/,
@@ -40,11 +45,12 @@ module.exports = {
             },
             {
                 test: /\.(png|svg|jpg|gif)$/,
-                use: [
-                    'file-loader'
-                ]
+                loader: 'file-loader'
+            },
+            {
+                test: /\.san$/,
+                loader: 'san-loader'
             }
-
         ]
     }
 }
